@@ -27,10 +27,11 @@
                                     </p>
                                 </div>
                                 <div class="card__actions">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                                     <a href="/products/<%= product._id %>" class="btn">Details</a>
                                     <% if (isAuthenticated) { %>
                                         <%- include('../includes/add-to-cart.ejs', {product: product}) %>
-                                    <% } %> 
+                                    <% } %>
                                 </div>
                             </article>
                             <% } %>
