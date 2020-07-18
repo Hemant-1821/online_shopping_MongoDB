@@ -3,14 +3,18 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
-const { validationResult } = require('express-validator/check')
+const { validationResult } = require('express-validator/check');
+require('dotenv').config();
 
 const User = require('../models/user');
 const user = require('../models/user');
 
+//console.log(process.env.API_KEY_SEND)
+
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
-    api_key: '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'
+    api_key: process.env.API_KEY_SEND
+    // api_key: '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'
   }
 }));
 
@@ -133,6 +137,9 @@ exports.postSignUp = (req,res,next) => {
       from: 'singh.hemant9583@gmail.com',
       subject: 'Signup Succeeded!',
       html: '<H1>You Successfully signed Up!</H1>'
+    }).then((result)=> {
+      console.log(result);
+      console.log('sent');
     });
   }).catch(err => {
     console.log(err);
