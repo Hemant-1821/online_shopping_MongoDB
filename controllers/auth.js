@@ -7,7 +7,6 @@ const { validationResult } = require('express-validator/check');
 require('dotenv').config();
 
 const User = require('../models/user');
-const user = require('../models/user');
 
 //console.log(process.env.API_KEY_SEND)
 
@@ -99,9 +98,12 @@ exports.postLogin = (req, res, next) => {
       console.log(err);
       res.redirect('/login');
     });
-  }).catch(err => {
-    console.log(err);
   })
+  .catch(err => {
+    const error = new Error(err) ;
+    error.httpStatusCode = 500;
+    next(error);
+  });
 };
 
 exports.postSignUp = (req,res,next) => { 
@@ -140,8 +142,11 @@ exports.postSignUp = (req,res,next) => {
       console.log(result);
       console.log('sent');
     });
-  }).catch(err => {
-    console.log(err);
+  })
+  .catch(err => {
+    const error = new Error(err) ;
+    error.httpStatusCode = 500;
+    next(error);
   });
 };
 
@@ -195,8 +200,10 @@ exports.postReset = (req,res,next) => {
         });
       })
       .catch(err => {
-      console.log(err);
-    })
+        const error = new Error(err) ;
+        error.httpStatusCode = 500;
+        next(error);
+      });
   });
 };
 
@@ -218,9 +225,11 @@ exports.getNewPassword = (req,res,next) => {
       passwordToken: Token
     });
   })
-  .catch( err => {
-    console.log(err);
-  })
+  .catch(err => {
+    const error = new Error(err) ;
+    error.httpStatusCode = 500;
+    next(error);
+  });
 };
 
 exports.postNewPassword = (req,res,next) => {
@@ -242,7 +251,9 @@ exports.postNewPassword = (req,res,next) => {
   .then( result => {
     res.redirect('/login');
   })
-  .catch(err =>{
-    console.log(err);
-  })
+  .catch(err => {
+    const error = new Error(err) ;
+    error.httpStatusCode = 500;
+    next(error);
+  });
 };
