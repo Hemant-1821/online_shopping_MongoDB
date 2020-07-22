@@ -12,6 +12,13 @@ const multer = require('multer');
 require('dotenv').config();
 
 const errorController = require('./controllers/error');
+
+
+const shopController = require('./controllers/shop');
+
+const isAuth = require('./middleware/isAuth');
+
+
 const User = require('./models/user');
 
 const MONGODB_URI = process.env.API_KEY_MONGO;
@@ -61,12 +68,11 @@ app.use(
   })
 ); 
 
-app.use(csrfProtection);
+
 app.use(flash());
 
 app.use((req,res,next)=> {
-  res.locals.isAuthenticated = req.session.isLoggedIn,
-  res.locals.csrfToken = req.csrfToken()
+  res.locals.isAuthenticated = req.session.isLoggedIn;
   next();
 });
 
@@ -89,6 +95,14 @@ app.use((req, res, next) => {
     });
 });
 
+app.post('/create-order', isAuth, shopController.postOrder);
+
+app.use(csrfProtection);
+app.use((req,res,next)=> {
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -107,10 +121,12 @@ app.use((error, req, res, next) => {
   });
 });
 
+const PORT = process.env.PORT || 3000;
+
 mongoose
   .connect(MONGODB_URI)
   .then(result =>{
-    app.listen(3000);
+    app.listen(PORT);
   })
   .catch(err => {
     console.log(err); 
